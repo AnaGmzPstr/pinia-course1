@@ -19,7 +19,6 @@ const updateValue = (value) => emit("update:modelValue", value);
     type="number" 
     min="0" 
     @input="updateValue($event.target.value)" 
-    @updateCount="cartStore.setItemCount(items[0],$event)"
     />
     <button
       class="bg-gray-200 px-2 rounded-r cursor-pointer"

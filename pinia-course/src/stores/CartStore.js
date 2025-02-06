@@ -16,9 +16,9 @@ export const useCartStore = defineStore("CartStore" ,{
             }
         },
         setItemCount(item,count){
-            const index = this.items.findIndex((i) => i.name === item.name);
-            if (index !== -1) {
-                this.items[index].count = count;
+            this.index = this.items.filter((i) => i.name !== item.name);
+            for (let index=0; index<count; index++) {
+                this.items.push({...item});
             }
         }
     },
@@ -36,6 +36,7 @@ export const useCartStore = defineStore("CartStore" ,{
         grouped:state =>groupBy(state.items, item=>item.name),
         groupCount: (state) => (name)=>state.grouped[name].length,
         // getter per obtenir total amb funció reduce
-        total: (state) => state.items.reduce((aux, item) => aux + item.price, 0), // aux es el valor anterior, item es el valor actual, 0 es el valor inicial
+        total:(state)=>state.items.reduce((total, item) => total + item.price, 0),
+        // aux es el valor anterior, item es el valor actual, 0 es el valor inicial
     }
 })
