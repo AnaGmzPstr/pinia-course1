@@ -3,9 +3,11 @@ import { groupBy } from "lodash";
 import { useAuthUserStore } from "@/stores/AuthUserStore";
 
 export const useCartStore = defineStore("CartStore", {
+    historyEnabled: true,
     state: () => {
         return {
-            items: [],
+            //items: [],
+            items: useLocalStorage("CartStore:items",[]),
         }
     },
     actions: {

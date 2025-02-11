@@ -2,6 +2,11 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { createPinia } from "pinia";
 
+// registrar el plugin a main.js
+import {piniaHistoryPlugin} from "@/plugins/PiniaHistoryPlugin"
+const pinia=createPinia()
+pinia.use(piniaHistoryPlugin)
+
 // Icons and Styles
 import FontAwesomePlugin from "./plugins/FontAwesome";
 import "./assets/main.pcss";
@@ -13,6 +18,8 @@ import AppModalOverlay from "./components/AppModalOverlay.vue";
 
 // Init App
 createApp(App)
+  // registrar el plugin
+  .use(pinia)
   .use(createPinia())
   .use(FontAwesomePlugin)
   .component("AppButton", AppButton)

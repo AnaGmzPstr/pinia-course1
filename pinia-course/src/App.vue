@@ -9,10 +9,33 @@ import { useProductStore } from "./stores/ProductStores.js";
 import { useCartStore } from "./stores/CartStore.js";
 
 import { storeToRefs } from "pinia";
+import { ref, reactive } from "vue";
 
 //const {products} = storeToRefs(useProductStore());
 const productStore = useProductStore();
 const cartStore = useCartStore();
+
+const history = reactive([])
+const doingHistory = ref(false)
+history.push(JSON.stringify(cartStore.$state));
+
+const redo = () => {
+  const latestState = future.pop()
+  if (!latestState) return;
+  doingHistory.value = true;
+  history.push(latestState)
+  cartStore.$state = JSON.parse(latestState)
+  doingHistory.value = false;
+}
+
+cartStore.$subscribe((mutation, state) => {
+  if (!doingHistory.value) {
+    history.push(JSON.stringify(state));
+    //future.splice(0,future.length)
+    //no podem resetejar a zero ja que perdriem la reactivitat
+  }
+})
+
 
 productStore.fill()
 
@@ -58,15 +81,40 @@ cartStore.$onAction(({
   }
 })
 
-
-
-
 //useProductStore();
+
+// Subscriure's a un estat
+cartStore.$subscribe((mutation, state) => {
+  console.log({ mutation })
+  console.log({ state })
+})
+
+const undo = () => {
+  if (history.length === 1) return
+  doingHistory.value = true
+  history.pop()
+  cartStore.$state = JSON.parse(history.at(-1))
+  doingHistory.value = false
+}
+cartStore.$subscribe((mutation, state) => {
+  if (!doingHistory.value) {
+    history.push(JSON.stringify(state));
+  }
+})
+
+
+
+
 </script>
 
 <template>
   <div class="container">
     <TheHeader />
+    <div class="mb-5 flex justify-end">
+      <AppButton @click="cartStore.undo">Undo</AppButton>
+      <AppButton class="ml-2" @click="cartStore.redo">Redo</AppButton>
+    </div>
+
     <ul class="sm:flex flex-wrap lg:flex-nowrap gap-5">
       <ProductCard v-for="product in productStore.products" :key="product.name" :product="product"
         @addToCart="cartStore.addItems($event, product)" />

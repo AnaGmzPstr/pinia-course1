@@ -38,7 +38,10 @@ input[type="number"] {
   appearance: none;
   -moz-appearance: textfield;
   border: 1px solid gray;
-  @apply border-gray-500 w-10 text-center;
+  border-color: #6b7280;
+  width: 2.5rem;
+  text-align: center;
+
 }
 button {
   border: 1px solid gray;
